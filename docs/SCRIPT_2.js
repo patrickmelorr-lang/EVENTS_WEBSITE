@@ -28,21 +28,17 @@ let selectedEventId = null;
 function formatearHora(valorHora) {
   if (!valorHora) return "—";
   
-  // Si ya está en formato HH:MM, devolverlo tal cual
   if (/^\d{1,2}:\d{2}$/.test(valorHora)) {
     return valorHora;
   }
   
-  // Si es formato ISO (1899-12-30T13:08:36.000Z)
-  if (valorHora.includes('T') && valorHora.includes('Z')) {
+  if (valorHora.includes('T')) {
     try {
       const fecha = new Date(valorHora);
+      fecha.setHours(fecha.getHours() - 5);
       
-      // Convertir a zona horaria de Perú (UTC-5)
-      const horaLocal = new Date(fecha.getTime() - (5 * 60 * 60 * 1000));
-      
-      const horas = String(horaLocal.getUTCHours()).padStart(2, '0');
-      const minutos = String(horaLocal.getUTCMinutes()).padStart(2, '0');
+      const horas = String(fecha.getHours()).padStart(2, '0');
+      const minutos = String(fecha.getMinutes()).padStart(2, '0');
       return `${horas}:${minutos}`;
     } catch (e) {
       return valorHora;
@@ -51,7 +47,6 @@ function formatearHora(valorHora) {
   
   return valorHora;
 }
-
 
 // ==============================================
 // INIT
