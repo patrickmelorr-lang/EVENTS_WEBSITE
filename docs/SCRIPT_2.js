@@ -33,7 +33,7 @@ function formatearHora(valorHora) {
     return valorHora;
   }
   
-  // Si es formato ISO (1899-12-30T13:08:36.000Z)
+  // Si es formato ISO (1899-12-30T13:08:36.000Z) 
   if (typeof valorHora === 'string' && valorHora.includes('T')) {
     try {
       const fecha = new Date(valorHora);
@@ -57,9 +57,6 @@ function formatearHora(valorHora) {
       return valorHora;
     }
   }
-  
-  return valorHora;
-}
 
 
 // ==============================================
