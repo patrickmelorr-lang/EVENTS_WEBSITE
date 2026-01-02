@@ -24,6 +24,7 @@ let currentCalendarMonth = null;
 let currentCalendarYear = null;
 let selectedEventId = null;
 
+// Agregar esta función helper al inicio de tu código (después de las variables globales)
 function formatearHora(valorHora) {
   if (!valorHora) return "—";
   
@@ -36,8 +37,9 @@ function formatearHora(valorHora) {
   if (valorHora.includes('T') && valorHora.includes('Z')) {
     try {
       const fecha = new Date(valorHora);
-      const horas = String(fecha.getUTCHours()).padStart(2, '0');
-      const minutos = String(fecha.getUTCMinutes()).padStart(2, '0');
+      // Usar getHours() y getMinutes() en lugar de UTC para obtener hora local de Perú
+      const horas = String(fecha.getHours()).padStart(2, '0');
+      const minutos = String(fecha.getMinutes()).padStart(2, '0');
       return `${horas}:${minutos}`;
     } catch (e) {
       return valorHora;
@@ -46,6 +48,7 @@ function formatearHora(valorHora) {
   
   return valorHora;
 }
+
 
 // ==============================================
 // INIT
@@ -1036,6 +1039,67 @@ function mostrarDetalleEvento(eventId) {
   // SOLUCIÓN 1: Usar la función formatearHora
   document.getElementById("modalEntregaHora").textContent = formatearHora(evento.entrega_hora);
   document.getElementById("modalFinHora").textContent = formatearHora(evento.fin_hora);
+  
+  const finDia = evento.fin_fecha ? evento.fin_fecha.split("/").slice(0, 2).join("/") : "—";
+  document.getElementById("modalFinDia").textContent = finDia;
+
+  document.getElementById("modalEventoDetalle").classList.add("active");
+}
+
+// ==============================================
+// SOLUCIÓN 2 (ALTERNATIVA): Sin función helper
+// ==============================================
+// Si prefieres no agregar la función helper, reemplaza solo mostrarDetalleEvento con esto:
+
+function mostrarDetalleEvento(eventId) {
+  const evento = eventos.find(e => e.id === eventId);
+  if (!evento) return;
+
+  selectedEventId = eventId;
+
+  document.getElementById("modalNombre").textContent = evento.nombre || "—";
+  document.getElementById("modalCelular").textContent = evento.celular || "—";
+  document.getElementById("modalCategoria").textContent = evento.categoria || "—";
+  
+  // Formatear hora de entrega
+  let entregaHora = "—";
+  if (evento.entrega_hora) {
+    if (/^\d{1,2}:\d{2}$/.test(evento.entrega_hora)) {
+      entregaHora = evento.entrega_hora;
+    } else if (evento.entrega_hora.includes('T') && evento.entrega_hora.includes('Z')) {
+      try {
+        const fecha = new Date(evento.entrega_hora);
+        const h = String(fecha.getUTCHours()).padStart(2, '0');
+        const m = String(fecha.getUTCMinutes()).padStart(2, '0');
+        entregaHora = `${h}:${m}`;
+      } catch (e) {
+        entregaHora = evento.entrega_hora;
+      }
+    } else {
+      entregaHora = evento.entrega_hora;
+    }
+  }
+  document.getElementById("modalEntregaHora").textContent = entregaHora;
+  
+  // Formatear hora de finalización
+  let finHora = "—";
+  if (evento.fin_hora) {
+    if (/^\d{1,2}:\d{2}$/.test(evento.fin_hora)) {
+      finHora = evento.fin_hora;
+    } else if (evento.fin_hora.includes('T') && evento.fin_hora.includes('Z')) {
+      try {
+        const fecha = new Date(evento.fin_hora);
+        const h = String(fecha.getUTCHours()).padStart(2, '0');
+        const m = String(fecha.getUTCMinutes()).padStart(2, '0');
+        finHora = `${h}:${m}`;
+      } catch (e) {
+        finHora = evento.fin_hora;
+      }
+    } else {
+      finHora = evento.fin_hora;
+    }
+  }
+  document.getElementById("modalFinHora").textContent = finHora;
   
   const finDia = evento.fin_fecha ? evento.fin_fecha.split("/").slice(0, 2).join("/") : "—";
   document.getElementById("modalFinDia").textContent = finDia;
