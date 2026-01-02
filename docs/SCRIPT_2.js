@@ -57,6 +57,7 @@ function formatearHora(valorHora) {
       return valorHora;
     }
   }
+  }
 
 
 // ==============================================
