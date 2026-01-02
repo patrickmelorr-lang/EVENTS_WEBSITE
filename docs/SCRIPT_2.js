@@ -1036,6 +1036,11 @@ function mostrarDetalleEvento(eventId) {
   document.getElementById("modalEventoDetalle").classList.add("active");
 }
 
+function cerrarModal() {
+  document.getElementById("modalEventoDetalle").classList.remove("active");
+  selectedEventId = null;
+}
+
 async function toggleEstadoEvento(eventId) {
   // Esta función cambiaría el estado manualmente
   // Por simplicidad, aquí solo recargamos eventos
