@@ -37,9 +37,12 @@ function formatearHora(valorHora) {
   if (valorHora.includes('T') && valorHora.includes('Z')) {
     try {
       const fecha = new Date(valorHora);
-      // Usar getHours() y getMinutes() en lugar de UTC para obtener hora local de Perú
-      const horas = String(fecha.getHours()).padStart(2, '0');
-      const minutos = String(fecha.getMinutes()).padStart(2, '0');
+      
+      // Convertir a zona horaria de Perú (UTC-5)
+      const horaLocal = new Date(fecha.getTime() - (5 * 60 * 60 * 1000));
+      
+      const horas = String(horaLocal.getUTCHours()).padStart(2, '0');
+      const minutos = String(horaLocal.getUTCMinutes()).padStart(2, '0');
       return `${horas}:${minutos}`;
     } catch (e) {
       return valorHora;
