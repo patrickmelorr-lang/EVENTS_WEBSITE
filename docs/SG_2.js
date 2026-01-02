@@ -4,7 +4,7 @@
 // ==============================================
 
 // ID DE TU HOJA DE CÁLCULO (REEMPLAZAR)
-const SPREADSHEET_ID = "1kE95ncGe7X98cy5X1xovHeH72Tsh6O2naz7y-B81KmU";
+const SPREADSHEET_ID = "COLA EL ID DE TU HOJA DE CALCULO";
 
 // Hojas
 const HOJA_EVENTOS = "EVENTOS";
