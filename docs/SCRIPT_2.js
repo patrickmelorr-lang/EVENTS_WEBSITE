@@ -24,6 +24,29 @@ let currentCalendarMonth = null;
 let currentCalendarYear = null;
 let selectedEventId = null;
 
+function formatearHora(valorHora) {
+  if (!valorHora) return "—";
+  
+  // Si ya está en formato HH:MM, devolverlo tal cual
+  if (/^\d{1,2}:\d{2}$/.test(valorHora)) {
+    return valorHora;
+  }
+  
+  // Si es formato ISO (1899-12-30T13:08:36.000Z)
+  if (valorHora.includes('T') && valorHora.includes('Z')) {
+    try {
+      const fecha = new Date(valorHora);
+      const horas = String(fecha.getUTCHours()).padStart(2, '0');
+      const minutos = String(fecha.getUTCMinutes()).padStart(2, '0');
+      return `${horas}:${minutos}`;
+    } catch (e) {
+      return valorHora;
+    }
+  }
+  
+  return valorHora;
+}
+
 // ==============================================
 // INIT
 // ==============================================
@@ -1010,45 +1033,9 @@ function mostrarDetalleEvento(eventId) {
   document.getElementById("modalCelular").textContent = evento.celular || "—";
   document.getElementById("modalCategoria").textContent = evento.categoria || "—";
   
-  // Formatear hora de entrega
-  let entregaHora = "—";
-  if (evento.entrega_hora) {
-    if (/^\d{1,2}:\d{2}$/.test(evento.entrega_hora)) {
-      entregaHora = evento.entrega_hora;
-    } else if (evento.entrega_hora.includes('T') && evento.entrega_hora.includes('Z')) {
-      try {
-        const fecha = new Date(evento.entrega_hora);
-        const h = String(fecha.getUTCHours()).padStart(2, '0');
-        const m = String(fecha.getUTCMinutes()).padStart(2, '0');
-        entregaHora = `${h}:${m}`;
-      } catch (e) {
-        entregaHora = evento.entrega_hora;
-      }
-    } else {
-      entregaHora = evento.entrega_hora;
-    }
-  }
-  document.getElementById("modalEntregaHora").textContent = entregaHora;
-  
-  // Formatear hora de finalización
-  let finHora = "—";
-  if (evento.fin_hora) {
-    if (/^\d{1,2}:\d{2}$/.test(evento.fin_hora)) {
-      finHora = evento.fin_hora;
-    } else if (evento.fin_hora.includes('T') && evento.fin_hora.includes('Z')) {
-      try {
-        const fecha = new Date(evento.fin_hora);
-        const h = String(fecha.getUTCHours()).padStart(2, '0');
-        const m = String(fecha.getUTCMinutes()).padStart(2, '0');
-        finHora = `${h}:${m}`;
-      } catch (e) {
-        finHora = evento.fin_hora;
-      }
-    } else {
-      finHora = evento.fin_hora;
-    }
-  }
-  document.getElementById("modalFinHora").textContent = finHora;
+  // SOLUCIÓN 1: Usar la función formatearHora
+  document.getElementById("modalEntregaHora").textContent = formatearHora(evento.entrega_hora);
+  document.getElementById("modalFinHora").textContent = formatearHora(evento.fin_hora);
   
   const finDia = evento.fin_fecha ? evento.fin_fecha.split("/").slice(0, 2).join("/") : "—";
   document.getElementById("modalFinDia").textContent = finDia;
