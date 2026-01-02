@@ -32,14 +32,22 @@ function formatearHora(valorHora) {
     return valorHora;
   }
   
-  if (valorHora.includes('T')) {
+  if (typeof valorHora === 'string' && valorHora.includes('T')) {
     try {
       const fecha = new Date(valorHora);
-      fecha.setHours(fecha.getHours() - 5);
       
-      const horas = String(fecha.getHours()).padStart(2, '0');
-      const minutos = String(fecha.getMinutes()).padStart(2, '0');
-      return `${horas}:${minutos}`;
+      if (isNaN(fecha.getTime())) {
+        return valorHora;
+      }
+      
+      let horas = fecha.getUTCHours() - 5;
+      const minutos = fecha.getUTCMinutes();
+      
+      if (horas < 0) {
+        horas = horas + 24;
+      }
+      
+      return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
     } catch (e) {
       return valorHora;
     }
