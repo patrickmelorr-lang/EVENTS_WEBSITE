@@ -57,8 +57,10 @@ function formatearHora(valorHora) {
       return valorHora;
     }
   }
-  }
-
+  
+  // Si es otra cosa, devolver tal cual
+  return valorHora;
+}
 
 // ==============================================
 // INIT
@@ -324,20 +326,6 @@ function computeLineTotal(uniEl, cpuEl, totEl) {
   totEl.value = isFinite(total) ? total.toFixed(2) : "0.00";
 }
 
-
-
-
-  servicios.forEach(s => {
-    const chk = document.getElementById(`chk_${s.id}`);
-    if (!chk) return;
-    if (!chk.checked) {
-      chk.disabled = incompleteSelected;
-    } else {
-      chk.disabled = false;
-    }
-  });
-
-
 // ==============================================
 // BUTTONS / ACTIONS
 // ==============================================
@@ -387,8 +375,6 @@ function setupButtons() {
       toast("statusRegistrar", "error", `Error de conexión: ${err.message}`);
     }
   });
-
-
 
   // Descargar contrato
   document.getElementById("descargarContratoBtn").addEventListener("click", () => {
@@ -444,7 +430,6 @@ function setupButtons() {
     }
   });
 
-  // Modal cerrar
   // Modal cerrar
   document.getElementById("modalCloseBtn").addEventListener("click", () => cerrarModal());
   document.getElementById("modalCerrarBtn").addEventListener("click", () => cerrarModal());
@@ -561,11 +546,6 @@ function construirPayloadEvento() {
     garantia_dias: String(document.getElementById("g_dias").value || "0")
   };
 }
-
-// Continúa en Parte 2...
-// ==============================================
-// SCRIPT_2.JS - PARTE 2
-// ==============================================
 
 // ==============================================
 // SERVICIOS - CÁLCULO
@@ -1065,11 +1045,6 @@ async function toggleEstadoEvento(eventId) {
   toast("statusCalendario", "success", "Estado actualizado");
 }
 
-// Continúa en Parte 3...
-// ==============================================
-// SCRIPT_2.JS - PARTE 3 (FINAL)
-// ==============================================
-
 // ==============================================
 // HISTORIAL
 // ==============================================
@@ -1363,7 +1338,10 @@ function limpiarFormularioPagos() {
   calcularTotalesPagos();
 }
 
-
+function cerrarModal() {
+  document.getElementById("modalEventoDetalle").classList.remove("active");
+  selectedEventId = null;
+}
 
 // ==============================================
 // PDF CONTRATO
