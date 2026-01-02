@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Eventos - Sistema Profesional</title>
+  <link rel="stylesheet" href="ESTILO_EVENTO.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body data-theme="dark">
+  
+  <!-- Theme Toggle -->
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fa-solid fa-moon"></i>
+    <span id="themeText">Oscuro</span>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fa-solid fa-calendar-check"></i>
+        <span>Gestión Eventos</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" data-section="registrar" class="active">
+          <i class="fa-solid fa-plus-circle"></i>
+          <span>Registrar Evento</span>
+        </a>
+        <a href="#" data-section="dashboard">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" data-section="calendario">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Calendario-Cronograma</span>
+        </a>
+        <a href="#" data-section="historial">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>Historial</span>
+        </a>
+        <a href="#" data-section="pagos">
+          <i class="fa-solid fa-money-bill-wave"></i>
+          <span>Pago de Servicios</span>
+        </a>
+        <a href="#" data-section="configuracion">
+          <i class="fa-solid fa-gear"></i>
+          <span>Configuración</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p class="small-muted">Sistema de Gestión v2.0<br>© 2025 - Profesional</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- REGISTRAR EVENTO -->
+      <section id="registrar" class="content-section active">
+        <h2><i class="fa-solid fa-plus-circle"></i> Registrar Nuevo Evento</h2>
+        <p class="subtext">Complete todos los campos para registrar un nuevo evento de alquiler.</p>
+
+        <div id="statusRegistrar" class="status-message"></div>
+
+        <!-- Datos del Inquilino -->
+        <div class="card-block">
+          <div class="card-title"><i class="fa-solid fa-user"></i> Datos del Inquilino</div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label>Nombres y Apellidos Completos</label>
+              <input type="text" id="i_nombre" placeholder="Ej: Juan Carlos Pérez López" required>
+              <div class="field-help">Escriba el nombre completo del arrendatario.</div>
+            </div>
+            <div class="form-group">
+              <label>Celular</label>
+              <input type="text" id="i_celular" inputmode="numeric" placeholder="Ej: 987654321" required>
+              <div class="field-help">Solo números, máximo 9 dígitos.</div>
+            </div>
+            <div class="form-group">
+              <label>DNI</label>
+              <input type="text" id="i_dni" inputmode="numeric" placeholder="Ej: 12345678" required>
+              <div class="field-help">Exactamente 8 dígitos.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Datos del Evento -->
+        <div class="card-block">
+          <div class="card-title"><i class="fa-solid fa-calendar"></i> Datos del Evento</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Categoría del Evento</label>
+              <select id="e_categoria" required>
+                <option value="">Seleccione...</option>
+                <option value="CUMPLEAÑOS">CUMPLEAÑOS</option>
+                <option value="BABY SHOWER">BABY SHOWER</option>
+                <option value="GRADUACIÓN">GRADUACIÓN</option>
+                <option value="ARTISTICO">ARTISTICO</option>
+                <option value="SOCIAL">SOCIAL</option>
+                <option value="CORPORATIVO">CORPORATIVO</option>
+                <option value="ANNIVERSARIO">ANNIVERSARIO</option>
+                <option value="DEPORTIVO">DEPORTIVO</option>
+                <option value="OTRO">OTRO</option>
+              </select>
+            </div>
+            <div class="form-group" id="categoriaOtroGroup" style="display:none;">
+              <label>Especifique Categoría</label>
+              <input type="text" id="e_categoria_otro" placeholder="Ej: Boda">
+              <div class="field-help">Escriba el tipo de evento.</div>
+            </div>
+
+            <div class="form-group">
+              <label>Fecha del Evento</label>
+              <div class="dual-input">
+                <input type="text" id="e_fecha_text" placeholder="dd/mm/aaaa" required>
+                <button type="button" class="icon-btn" id="e_fecha_btn">
+                  <i class="fa-solid fa-calendar"></i>
+                </button>
+                <input type="date" id="e_fecha_picker" class="hidden-date">
+              </div>
+              <div class="field-help">Día en que se celebrará el evento.</div>
+            </div>
+
+            <div class="form-group">
+              <label>Fecha de Entrega</label>
+              <div class="dual-input">
+                <input type="text" id="e_entrega_fecha_text" placeholder="dd/mm/aaaa" required>
+                <button type="button" class="icon-btn" id="e_entrega_fecha_btn">
+                  <i class="fa-solid fa-calendar"></i>
+                </button>
+                <input type="date" id="e_entrega_fecha_picker" class="hidden-date">
+              </div>
+              <div class="field-help">Cuándo se entrega el local.</div>
+            </div>
+            <div class="form-group">
+              <label>Hora de Entrega</label>
+              <input type="time" id="e_entrega_hora" required>
+            </div>
+
+            <div class="form-group">
+              <label>Fecha de Finalización</label>
+              <div class="dual-input">
+                <input type="text" id="e_fin_fecha_text" placeholder="dd/mm/aaaa" required>
+                <button type="button" class="icon-btn" id="e_fin_fecha_btn">
+                  <i class="fa-solid fa-calendar"></i>
+                </button>
+                <input type="date" id="e_fin_fecha_picker" class="hidden-date">
+              </div>
+              <div class="field-help">Cuándo termina el uso del local.</div>
+            </div>
+            <div class="form-group">
+              <label>Hora de Finalización</label>
+              <input type="time" id="e_fin_hora" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Servicios a Alquilar -->
+        <div class="card-block">
+          <div class="card-title"><i class="fa-solid fa-list-check"></i> Servicios a Alquilar</div>
+          <p class="subtext">Active los servicios que el cliente desea alquilar y complete sus costos.</p>
+          <div id="serviciosContainer" class="services-grid"></div>
+
+          <div class="add-service-row">
+            <input type="text" id="nuevoServicioNombre" placeholder="Nombre del nuevo servicio (Ej: Proyector)">
+            <button type="button" class="btn secondary-btn" id="agregarServicioBtn">
+              <i class="fa-solid fa-plus"></i> Agregar Servicio
+            </button>
+          </div>
+        </div>
+
+        <!-- Totales y Garantía -->
+        <div class="card-block">
+          <div class="card-title"><i class="fa-solid fa-dollar-sign"></i> Totales y Garantía</div>
+          
+          <div class="total-bar" style="margin-bottom: 14px;">
+            <span class="total-label">Total Alquiler (S/.)</span>
+            <span class="total-value" id="totalAlquiler">S/ 0.00</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Adelanto (S/.)</label>
+              <input type="text" id="adelanto_precio" inputmode="decimal" placeholder="Ej: 150.00" required>
+              <div class="field-help">Monto adelantado para confirmar reserva.</div>
+            </div>
+
+            <div class="form-group">
+              <label>Depósito de Garantía (S/.)</label>
+              <input type="text" id="g_precio" inputmode="decimal" placeholder="Ej: 100.00" required>
+              <div class="field-help">Monto reembolsable por daños.</div>
+            </div>
+            <div class="form-group">
+              <label>Días para Devolución</label>
+              <select id="g_dias" required>
+                <option value="0">Mismo día</option>
+                <option value="1">1 día hábil</option>
+                <option value="2">2 días hábiles</option>
+                <option value="3">3 días hábiles</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn primary-btn" id="guardarEventoBtn">
+            <i class="fa-solid fa-save"></i> Guardar Evento
+          </button>
+
+          <button type="button" class="btn warning-btn" id="descargarContratoBtn" disabled>
+            <i class="fa-solid fa-download"></i> Descargar Contrato PDF
+          </button>
+        </div>
+
+        <div class="hint-box">
+          <div class="hint-title"><i class="fa-solid fa-lightbulb"></i> Ayuda</div>
+          <ul>
+            <li>Complete primero los datos del inquilino y del evento.</li>
+            <li>Active solo los servicios que el cliente va a alquilar.</li>
+            <li>El contrato PDF se genera después de guardar el evento.</li>
+            <li>El adelanto es no reembolsable y confirma la reserva.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="content-section">
+        <h2><i class="fa-solid fa-chart-line"></i> Dashboard - Análisis General</h2>
+        <p class="subtext">Visualice estadísticas y métricas clave de su negocio.</p>
+
+        <div id="statusDashboard" class="status-message"></div>
+
+        <!-- Filtro de Año -->
+        <div class="filter-container" style="margin-bottom: 20px;">
+          <div>
+            <label>Año a Visualizar</label>
+            <select id="dashboardAnioSelect">
+              <!-- Se llena dinámicamente -->
+            </select>
+          </div>
+        </div>
+
+        <div class="dashboard-layout">
+          <!-- Top Section -->
+          <div class="dashboard-top">
+            <div class="chart-container" style="height: 450px;">
+              <canvas id="chartIngresosMensuales"></canvas>
+            </div>
+            <div class="flujo-caja">
+              <div class="flujo-title">Flujo de Caja (Año Actual)</div>
+              <div class="flujo-item">
+                <span>Ingresos Totales:</span>
+                <span id="flujoCajaIngresos">S/ 0.00</span>
+              </div>
+              <div class="flujo-item">
+                <span>Egresos Totales:</span>
+                <span id="flujoCajaEgresos">S/ 0.00</span>
+              </div>
+              <div class="flujo-item">
+                <span>Saldo:</span>
+                <span id="flujoCajaSaldo">S/ 0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Section -->
+          <div class="dashboard-bottom">
+            <div class="monthly-list">
+              <div class="monthly-list-title">Ingresos Mensuales</div>
+              <div id="ingresosListado"></div>
+            </div>
+
+            <div class="chart-container" style="height: 400px;">
+              <canvas id="chartCategoriaDona"></canvas>
+            </div>
+
+            <div class="monthly-list">
+              <div class="monthly-list-title">Egresos Mensuales</div>
+              <div id="egresosListado"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CALENDARIO -->
+      <section id="calendario" class="content-section">
+        <h2><i class="fa-solid fa-calendar-days"></i> Calendario - Cronograma</h2>
+        <p class="subtext">Visualice las fechas ocupadas y disponibles del local.</p>
+
+        <div id="statusCalendario" class="status-message"></div>
+
+        <!-- Controles -->
+        <div class="calendar-controls">
+          <div class="calendar-nav">
+            <button id="calPrevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="calendar-current" id="calendarCurrent">Todos los meses</div>
+            <button id="calNextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          
+          <div>
+            <label>Filtrar por Mes</label>
+            <select id="calMesSelect">
+              <option value="">Todos los meses</option>
+              <option value="1">Enero</option>
+              <option value="2">Febrero</option>
+              <option value="3">Marzo</option>
+              <option value="4">Abril</option>
+              <option value="5">Mayo</option>
+              <option value="6">Junio</option>
+              <option value="7">Julio</option>
+              <option value="8">Agosto</option>
+              <option value="9">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Filtrar por Año</label>
+            <select id="calAnioSelect">
+              <!-- Se llena dinámicamente -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Leyenda -->
+        <div class="calendar-legend">
+          <div class="legend-item">
+            <div class="legend-color disponible"></div>
+            <span>Disponible</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color ocupado"></div>
+            <span>Ocupado (Próximo)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color finalizado"></div>
+            <span>Finalizado (Pasado)</span>
+          </div>
+        </div>
+
+        <!-- Calendarios -->
+        <div id="calendarsContainer" class="calendars-grid"></div>
+      </section>
+
+      <!-- HISTORIAL -->
+      <section id="historial" class="content-section">
+        <h2><i class="fa-solid fa-clock-rotate-left"></i> Historial de Eventos</h2>
+        <p class="subtext">Consulte el registro completo de eventos.</p>
+
+        <div id="statusHistorial" class="status-message"></div>
+
+        <!-- Filtros -->
+        <div class="filter-container">
+          <div>
+            <label>Categoría</label>
+            <select id="filtroCategoria">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div>
+            <label>Mes</label>
+            <select id="filtroMes">
+              <option value="">Todos</option>
+              <option value="1">Enero</option>
+              <option value="2">Febrero</option>
+              <option value="3">Marzo</option>
+              <option value="4">Abril</option>
+              <option value="5">Mayo</option>
+              <option value="6">Junio</option>
+              <option value="7">Julio</option>
+              <option value="8">Agosto</option>
+              <option value="9">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+          </div>
+          <div>
+            <label>Año</label>
+            <select id="filtroAnio">
+              <option value="">Todos</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:10px; align-items:flex-end;">
+            <button class="btn primary-btn" id="aplicarFiltrosBtn">
+              <i class="fa-solid fa-filter"></i> Aplicar
+            </button>
+            <button class="btn ghost-btn" id="limpiarFiltrosBtn">
+              <i class="fa-solid fa-eraser"></i> Limpiar
+            </button>
+          </div>
+        </div>
+
+        <div class="resume-box">
+          <strong>Total eventos filtrados:</strong> <span id="totalEventosFiltrado">0</span> |
+          <strong>Monto total:</strong> <span id="montoEventosFiltrado">S/ 0.00</span>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>DNI</th>
+                <th>Categoría</th>
+                <th>Fecha Evento</th>
+                <th>Total (S/.)</th>
+                <th>Fecha Registro</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="historialTableBody">
+              <tr><td colspan="8">Cargando eventos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="form-actions" style="margin-top: 16px;">
+          <button class="btn secondary-btn" id="exportarBtn">
+            <i class="fa-solid fa-file-export"></i> Exportar a CSV
+          </button>
+        </div>
+      </section>
+
+      <!-- PAGOS DE SERVICIOS -->
+      <section id="pagos" class="content-section">
+        <h2><i class="fa-solid fa-money-bill-wave"></i> Pago de Servicios y Mejoras</h2>
+        <p class="subtext">Registre los gastos mensuales del negocio.</p>
+
+        <div id="statusPagos" class="status-message"></div>
+
+        <!-- Servicios Mensuales -->
+        <div class="card-block">
+          <div class="card-title"><i class="fa-solid fa-receipt"></i> Servicios Mensuales</div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Mes de Pago</label>
+              <select id="pago_mes" required>
+                <option value="">Seleccione mes...</option>
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Año</label>
+              <select id="pago_anio" required>
+                <!-- Se llena dinámicamente -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Luz (S/.)</label>
+              <input type="text" id="pago_luz" inputmode="decimal" placeholder="0.00">
+            </div>
+            <div class="form-group">
+              <label>Agua (S/.)</label>
+              <input type="text" id="pago_agua" inputmode="decimal" placeholder="0.00">
+            </div>
+            <div class="form-group">
+              <label>Limpieza (S/.)</label>
+              <input type="text" id="pago_limpieza" inputmode="decimal" placeholder="0.00">
+            </div>
+            <div class="form-group">
+              <label>Seguridad (S/.)</label>
+              <input type="text" id="pago_seguridad" inputmode="decimal" placeholder="0.00">
+            </div>
+          </div>
+
+          <div id="serviciosExtrasContainer"></div>
+
+          <div class="add-service-row">
+            <input type="text" id="nuevoServicioPagoNombre" placeholder="Nombre del servicio adicional">
+            <input type="text" id="nuevoServicioPagoPrecio" inputmode="decimal" placeholder="0.00" style="max-width: 150px;">
+            <button type="button" class="btn secondary-btn" id="agregarServicioPagoBtn">
+              <i class="fa-solid fa-plus"></i> Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- Mejoras y Arreglos -->
+        <div class="card-block">
+          <div class="card-title"><i class="fa-solid fa-wrench"></i> Mejoras y Arreglos</div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Costo de Mejoras (S/.)</label>
+              <input type="text" id="mejoras_costo" inputmode="decimal" placeholder="0.00">
+            </div>
+            <div class="form-group full-width">
+              <label>Descripción de Mejoras</label>
+              <textarea id="mejoras_desc" placeholder="Describa las mejoras realizadas..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Costo de Arreglos (S/.)</label>
+              <input type="text" id="arreglos_costo" inputmode="decimal" placeholder="0.00">
+            </div>
+            <div class="form-group full-width">
+              <label>Descripción de Arreglos</label>
+              <textarea id="arreglos_desc" placeholder="Describa los arreglos realizados..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="card-block">
+          <div class="card-title"><i class="fa-solid fa-calculator"></i> Resumen de Costos</div>
+          
+          <div class="total-bar" style="margin-bottom: 10px;">
+            <span class="total-label">Total Servicios</span>
+            <span class="total-value" id="totalServicios">S/ 0.00</span>
+          </div>
+          <div class="total-bar" style="margin-bottom: 10px;">
+            <span class="total-label">Total Mejoras</span>
+            <span class="total-value" id="totalMejoras">S/ 0.00</span>
+          </div>
+          <div class="total-bar" style="margin-bottom: 10px;">
+            <span class="total-label">Total Arreglos</span>
+            <span class="total-value" id="totalArreglos">S/ 0.00</span>
+          </div>
+          <div class="total-bar">
+            <span class="total-label"><strong>TOTAL EGRESOS</strong></span>
+            <span class="total-value" id="totalEgresos" style="font-size: 1.5rem;">S/ 0.00</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn primary-btn" id="guardarPagoBtn">
+            <i class="fa-solid fa-save"></i> Guardar Registro de Pago
+          </button>
+        </div>
+      </section>
+
+      <!-- CONFIGURACIÓN -->
+      <section id="configuracion" class="content-section">
+        <h2><i class="fa-solid fa-gear"></i> Configuración del Sistema</h2>
+        <p class="subtext">Administre la conexión con Google Sheets y la base de datos.</p>
+
+        <div id="statusConfig" class="status-message"></div>
+
+        <div class="config-grid">
+          <div class="config-card">
+            <div class="config-title"><i class="fa-solid fa-database"></i> Base de Datos</div>
+            <p class="small-muted" style="margin-bottom: 12px;">
+              Inicialice las hojas de datos si es la primera vez que usa el sistema.
+            </p>
+            <button class="btn warning-btn" id="btnInitDB">
+              <i class="fa-solid fa-rocket"></i> Iniciar Base de Datos
+            </button>
+          </div>
+
+          <div class="config-card">
+            <div class="config-title"><i class="fa-solid fa-plug"></i> Conexión</div>
+            <p class="small-muted" style="margin-bottom: 12px;">
+              Pruebe la conexión con Google Apps Script.
+            </p>
+            <button class="btn secondary-btn" id="btnProbarConexion">
+              <i class="fa-solid fa-wifi"></i> Probar Conexión
+            </button>
+          </div>
+        </div>
+
+        <div class="hint-box">
+          <div class="hint-title"><i class="fa-solid fa-info-circle"></i> Instrucciones</div>
+          <ul>
+            <li>Asegúrese de haber desplegado el script SG_2.js en Google Apps Script.</li>
+            <li>Copie la URL del Web App y péguela en la variable SCRIPT_URL del archivo SCRIPT_2.js</li>
+            <li>La primera vez, haga clic en "Iniciar Base de Datos" para crear las hojas.</li>
+            <li>Use "Probar Conexión" para verificar que todo funciona correctamente.</li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal para detalles de evento -->
+  <div class="modal-overlay" id="modalEventoDetalle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-info-circle"></i>
+          <span>Detalles del Evento</span>
+        </div>
+        <button class="modal-close" id="modalCloseBtn" title="Cerrar (ESC)">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">📋 Datos del Inquilino</div>
+        <div class="modal-info">
+          <div class="modal-info-row">
+            <span class="modal-info-label">Nombre:</span>
+            <span id="modalNombre">—</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="modal-info-label">Celular:</span>
+            <span id="modalCelular">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">🎉 Evento</div>
+        <div class="modal-info">
+          <div class="modal-info-row">
+            <span class="modal-info-label">Categoría:</span>
+            <span id="modalCategoria">—</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="modal-info-label">Hora de Entrega:</span>
+            <span id="modalEntregaHora">—</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="modal-info-label">Hora de Finalización:</span>
+            <span id="modalFinHora">—</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="modal-info-label">Día Finalizado:</span>
+            <span id="modalFinDia">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn warning-btn" id="modalToggleEstadoBtn">
+          <i class="fa-solid fa-repeat"></i> Cambiar Estado
+        </button>
+        <button class="btn ghost-btn" id="modalCerrarBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LÍNEA CRÍTICA QUE FALTABA - HACE QUE LOS BOTONES FUNCIONEN -->
+  <script src="SCRIPT_2.js"></script>
+  
+</body>
+</html>
